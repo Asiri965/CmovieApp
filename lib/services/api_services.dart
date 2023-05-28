@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cmovie_app/models/movie_details_model.dart';
 import 'package:cmovie_app/models/movies_model.dart';
 import 'package:http/http.dart';
 
@@ -7,9 +8,7 @@ class ApiService {
   final apiKey = "api_key=2fea4e9de5ce402178bbd69f6311bced";
   final popular = "https://api.themoviedb.org/3/movie/popular?";
 
-
 //>>>>>>>>>>>>>> Get popular movies
-
 
   Future<List<Movie>> getMovies({required int page}) async {
     //Send request
@@ -27,5 +26,15 @@ class ApiService {
       throw Exception(response.statusCode);
     }
   }
+
+  Future<MovieDetailsModel> getDetails({required String id}) async {
+    Response response = await get(Uri.parse(
+        "https://api.themoviedb.org/3/movie/$id?$apiKey"));
+        if (response.statusCode == 200) {
+          Map<String,dynamic> json = jsonDecode(response.body);
+          return MovieDetailsModel.fromJson(json);
+        }else{
+          throw Exception(response.statusCode);
+        }
+  }
 }
- 
